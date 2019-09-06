@@ -14,6 +14,7 @@ var connection = mysql.createConnection(JSON.parse(fs.readFileSync('db/db.json')
 
 var app = express();
 app.set('view engine', 'pug');
+app.use(express.static('./public'))
 
 
 app.use(session({
@@ -31,6 +32,7 @@ app.use('/admin', adminRouter);
 app.use('/instructor', instructorRouter);
 app.use('/student', studentRouter);
 
+//check if user is logged in
 var sessionChecker = (req, res, next) => {
 	if (req.session.user) {
 		res.redirect('/roles');
@@ -43,6 +45,7 @@ app.get('/', sessionChecker, (req, res) => {
 	res.redirect('/login');
 });
 
+//allow user to log in
 app.route('/login')
 	.get(sessionChecker, (req, res) => {
 		message = req.session.loginMessage;
@@ -73,8 +76,20 @@ app.route('/login')
 			}
 	});
 	
+//redirect user based on role after login
 app.get('/roles', (req, res) => {
+		if(req.session.user.role == 'student'){
+			req.session.user.courses = [];
+		}
+		
+		if(req.session.user.role != 'admin'){
+
+			res.redirect('/' + req.session.user.role + '/home');
+		}else{
+
 		res.redirect('/' + req.session.user.role);
+		}
 	});
 	
-app.listen(3000);
+
+app.listen(8000);

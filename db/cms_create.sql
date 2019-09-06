@@ -63,4 +63,15 @@ CREATE TABLE IF NOT EXISTS `has_teaching` (
 	`is_main` boolean
 );
 
+CREATE TABLE IF NOT EXISTS `teach_request` (
+	`instructor_id` int(11) UNSIGNED NOT NULL REFERENCES `users`(`user_id`),
+	`class_id` int(11) UNSIGNED NOT NULL REFERENCES `classes`(`class_id`)
+
+);
+
+CREATE TABLE IF NOT EXISTS `courses_taken` (
+	`course_id` int(11) UNSIGNED NOT NULL REFERENCES `courses`(`course_id`),
+	`student_id` int(11) UNSIGNED NOT NULL REFERENCES `users`(`user_id`)
+);
+
 INSERT INTO `users` (`username`, `password`, `first_name`, `last_name`, `role`) VALUES ('admin000', 'adminpass', 'John', 'Anglo', 'admin')
